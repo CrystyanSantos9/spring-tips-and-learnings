@@ -6,7 +6,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -15,6 +19,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "CART")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Cart implements Serializable {
 
@@ -25,55 +33,6 @@ public class Cart implements Serializable {
     @OneToMany(mappedBy="cart")
     private Set<Item> items = new HashSet<> ();
 
-    public Cart() {
-    }
 
-    public Cart(long id, Set<Item> items) {
-        this.id = id;
-        this.items = items;
-    }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Set<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(Set<Item> items) {
-        this.items = items;
-    }
-
-    public void add(Item item){
-        if(items==null){
-            items = new HashSet<> ();
-        }
-        item.setCart (this);
-        items.add (item);
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof Cart cart)) return false;
-        return id == cart.id && Objects.equals (items, cart.items);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash (id);
-    }
-
-    @Override
-    public String toString() {
-        return "Cart{" +
-                "id=" + id +
-                ", items=" + items +
-                '}';
-    }
 }
