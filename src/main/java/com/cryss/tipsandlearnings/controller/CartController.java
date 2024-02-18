@@ -1,23 +1,21 @@
 package com.cryss.tipsandlearnings.controller;
 
-import com.cryss.tipsandlearnings.model.Cart;
+import com.cryss.tipsandlearnings.model.CartItemsDTO;
+import com.cryss.tipsandlearnings.model.CartItemsProjection;
 import com.cryss.tipsandlearnings.repository.CartRepository;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/carts")
@@ -28,27 +26,37 @@ public class CartController {
     private final CartRepository cartRepository;
 
     @GetMapping
-    public ResponseEntity<List<Cart>> getCarts(
-            @RequestParam(required = false) String id,
-            ServletRequest request,
-            ServletResponse response){
+    public ResponseEntity<List<CartItemsDTO>> getCarts(@RequestParam(required = false) String id) {
 
-        List<Cart> result = new ArrayList<> ();
+        log.info ("Controller={} operation={} method={}", "CartController", "getCarts", "GET /carts");
 
-        log.info ("Controller={}, operation={}, method={}", "CartController", "getCarts", "GET /carts");
+        List<CartItemsDTO> res;
 
-        if(id != null && !id.isEmpty ()){
-            var cart = cartRepository.findById (Long.valueOf (id))
-                    .orElseThrow (()-> new RuntimeException ("CART_ID NOT FOUND"));
 
-            result.add (cart);
-        }else{
-            result = cartRepository.findAll ();
+        if (id != null && !id.isEmpty ()) {
+            res = cartRepository.findItemsByCartId (Long.parseLong (id)).stream ().map (item -> {
+                return CartItemsDTO
+                        .builder ()
+                        .cartId (item.getCartId ())
+                        .itemId (item.getItemId ())
+                        .quantity (item.getQuantity ())
+                        .build ();
+            }).toList ();
+
+        } else {
+            res = cartRepository.findAllItems ().stream ().map (item -> {
+                return CartItemsDTO.builder ().
+                        cartId (item.getCartId ()).
+                        itemId (item.getItemId ()).
+                        quantity (item.getQuantity ()).build ();
+            }).toList ();
+
+
         }
 
+        log.info ("Controller={}, " + "operation={}, " + "method={}", "response={}", "CartController", "getCarts", "GET /carts", res.toString ());
 
-        log.info ("Controller={}, operation={}, method={}, response={}", "CartController", "getCarts", "GET /carts", result);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<> (res, HttpStatus.OK);
     }
 }
