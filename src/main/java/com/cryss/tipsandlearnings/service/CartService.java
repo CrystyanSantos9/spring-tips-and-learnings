@@ -21,7 +21,7 @@ public class CartService {
     private final CartRepository cartRepository;
 
 
-    @Cacheable("carts_items")
+    @Cacheable(value = "carts_items", unless="#result.size()==0")
     public List<CartItemsDTO> getCarts(String id){
 
 
