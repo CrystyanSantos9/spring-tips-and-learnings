@@ -3,6 +3,7 @@ package com.cryss.tipsandlearnings.controller;
 import com.cryss.tipsandlearnings.model.CartItemsDTO;
 import com.cryss.tipsandlearnings.model.CartItemsProjection;
 import com.cryss.tipsandlearnings.repository.CartRepository;
+import com.cryss.tipsandlearnings.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CartController {
 
-    private final CartRepository cartRepository;
+    private final CartService cartService;
 
     @GetMapping
     public ResponseEntity<List<CartItemsDTO>> getCarts(@RequestParam(required = false) String id) {
@@ -32,27 +33,8 @@ public class CartController {
 
         List<CartItemsDTO> res;
 
+        res = cartService.getCarts (id);
 
-        if (id != null && !id.isEmpty ()) {
-            res = cartRepository.findItemsByCartId (Long.parseLong (id)).stream ().map (item -> {
-                return CartItemsDTO
-                        .builder ()
-                        .cartId (item.getCartId ())
-                        .itemId (item.getItemId ())
-                        .quantity (item.getQuantity ())
-                        .build ();
-            }).toList ();
-
-        } else {
-            res = cartRepository.findAllItems ().stream ().map (item -> {
-                return CartItemsDTO.builder ().
-                        cartId (item.getCartId ()).
-                        itemId (item.getItemId ()).
-                        quantity (item.getQuantity ()).build ();
-            }).toList ();
-
-
-        }
 
         log.info ("Controller={}, " + "operation={}, " + "method={}", "response={}", "CartController", "getCarts", "GET /carts", res.toString ());
 
