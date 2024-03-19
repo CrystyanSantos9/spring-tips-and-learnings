@@ -24,12 +24,13 @@ import org.hibernate.proxy.HibernateProxy;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity
+//@Entity
 @Table(name = "ITEMS")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Item implements Serializable {
 
 

@@ -25,12 +25,13 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
+//@Entity
 @Table(name = "CART")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Cart implements Serializable {
 
     @Id

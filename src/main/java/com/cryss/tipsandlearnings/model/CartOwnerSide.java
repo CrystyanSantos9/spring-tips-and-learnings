@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
+//@Entity
 @Table(name = "CART_OWNER_SIDE")
 public class CartOwnerSide implements Serializable {
 

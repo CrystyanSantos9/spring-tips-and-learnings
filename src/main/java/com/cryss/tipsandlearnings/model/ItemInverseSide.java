@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
-@Entity
+//@Entity
 @Table(name = "ITEMS_INVERSE_SIDE")
 public class ItemInverseSide implements Serializable {
 
