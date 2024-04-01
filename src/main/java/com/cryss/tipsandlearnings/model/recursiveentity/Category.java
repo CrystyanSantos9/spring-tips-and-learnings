@@ -1,5 +1,6 @@
 package com.cryss.tipsandlearnings.model.recursiveentity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
@@ -39,6 +40,7 @@ public class Category implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parent_category", referencedColumnName = "id")
     @JsonIgnore
+    @JsonBackReference
     private Category parentCategory;
 
 
