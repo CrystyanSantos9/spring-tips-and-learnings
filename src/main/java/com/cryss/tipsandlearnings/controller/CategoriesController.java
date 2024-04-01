@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @RestController 
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/categories")
 public class CategoriesController {
 
     // Other @Autowired injections
@@ -24,13 +26,14 @@ public class CategoriesController {
     @Autowired
     private ResponseIterableComponent responseIterable;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<ResponseIterableComponent> getCategories(@PathVariable String publicationTypeCode)  {
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<ResponseIterableComponent> getCategories(@PathVariable Long id) {
 
         try {
 
             // FormVersion
-            Collection<Category> categories = categoryRepository.findAll ();
+            Collection<Category> categories = new ArrayList<> ();
+            categories.add (categoryRepository.findById (id).get ());
 
 
             // Forms with it's children
@@ -40,20 +43,36 @@ public class CategoriesController {
             this.responseIterable.data = categories;
             this.responseIterable.status = 200;
             this.responseIterable.info = "success";
-            this.responseIterable.message = "Success on getting experimental form metadata data by Publication Type Code: " + publicationTypeCode + ".";
+            this.responseIterable.message = "Success on getting experimental form metadata data by Publication Type Code: " + id + ".";
 //            this.commonSvc.setLogger(INFO, this.responseIterable.message);
 
         } catch (Exception e) {
             this.responseIterable.status = 400;
             this.responseIterable.info = "error";
-            this.responseIterable.message = "Error on getting experimental form metadata data by Publication Type Code: " + publicationTypeCode + ".";
+            this.responseIterable.message = "Error on getting experimental form metadata data by Publication Type Code: " + id + ".";
 //            this.commonSvc.setLogger(ERROR, this responseIterable.message, e);
         }
 
-        return ResponseEntity.status(this.responseIterable.status).body(this.responseIterable);
+        return ResponseEntity.status (this.responseIterable.status).body (this.responseIterable);
 
 //        return ResponseEntity.status(this.responseIterable.status).body(this.responseIterable);
     }
 
     // Other API endpoints
+
+
+    @RequestMapping(method = RequestMethod.GET)
+    public List<Category> getAllCategories()  {
+
+
+        return categoryRepository.findAll ();
+
+// Other API endpoints
+    }
+
+
 }
+
+
+
+
